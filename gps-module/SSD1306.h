@@ -40,5 +40,7 @@ void LCD_Picture(const u8 *Picture);
 void LCD_Logo   (const u8 *picture, u16 picture_size, u8 Inversion);
 void LCD_command(u8 cmd);
 
+void LCD_Newline(void);
+
 //----------------------------------------------------------------------------------
 #endif

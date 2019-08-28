@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #ifndef BAUDRATE
-#define BAUDRATE 115200
+#define BAUDRATE 9600
 #endif
 
 #ifndef F_CPU

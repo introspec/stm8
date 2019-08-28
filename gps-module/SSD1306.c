@@ -117,13 +117,19 @@ void LCD_Update(void)
 }
 
 
+void
+LCD_Newline()
+{
+    x_cur = 0;
+    if (++y_cur > 3)
+        y_cur = 0;
+}
+
+
 void LCD_Chr(u8 ch)
 {
    u8 i;   
    lcd_buff_idx=y_cur*128+x_cur*6;    
-   //if ((ch>=0x20)&&(ch<=0x7F)) ch-=32;
-   //else if (ch>=0xC0) ch-=96;
-   //else ch = 95;   
    for (i=0;i<5;i++)
    {
       lcd_buff[lcd_buff_idx++] = font[ch][i];
