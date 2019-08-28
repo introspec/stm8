@@ -74,19 +74,17 @@ blink()
 void
 main() 
 {
+    uint8_t i;
     conf_led();
     conf_clk();
     conf_i2c();
 
     delay_ms(1);
     
-    //i2c_start();
-    //ii2c_write_addr(0x78);
-    //i2c_stop();
-
     LCD_Init();
     LCD_On();
     LCD_Clear();
+    LCD_FStr("Hello World");
     LCD_Update();
 
     I2C_CR1 &= (uint8_t)~1;

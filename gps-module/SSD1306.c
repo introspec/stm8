@@ -31,7 +31,7 @@ const u8 comm[]={
    //[1:0] = 01b, Vertical Addressing Mode
    //[1:0] = 10b, Page Addressing Mode (RESET)
    //[1:0] = 11b, Invalid   
-   0x20,0x01,        //Set Memory Addressing Mode 
+   0x20,0x00,        //Set Memory Addressing Mode 
    
    0xA1,             //Set Segment Re-map
    0xC8,             //Vertical flip    C0/C8
@@ -88,7 +88,7 @@ void LCD_Clear(void)
    u16 ix;
    for(ix=0;ix<BUFF_SIZE;ix++)
    {
-      lcd_buff[ix]=0xf0;
+      lcd_buff[ix]=0x00;
    }
    x_cur=0;
    y_cur=0;
@@ -117,14 +117,13 @@ void LCD_Update(void)
 }
 
 
-#if 0
 void LCD_Chr(u8 ch)
 {
    u8 i;   
    lcd_buff_idx=y_cur*128+x_cur*6;    
-   if ((ch>=0x20)&&(ch<=0x7F)) ch-=32;
-   else if (ch>=0xC0) ch-=96;
-   else ch = 95;   
+   //if ((ch>=0x20)&&(ch<=0x7F)) ch-=32;
+   //else if (ch>=0xC0) ch-=96;
+   //else ch = 95;   
    for (i=0;i<5;i++)
    {
       lcd_buff[lcd_buff_idx++] = font[ch][i];
@@ -142,13 +141,13 @@ void LCD_Chr(u8 ch)
    }
 }
 
+
 void LCD_FStr(const u8 *dataPtr){
    while(*dataPtr!=0){
       LCD_Chr(*dataPtr);
       dataPtr++;
    }
 }
-#endif 
 
 
 void LCD_GotoXY(u8 x,u8 y){
