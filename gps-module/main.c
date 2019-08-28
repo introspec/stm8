@@ -193,13 +193,17 @@ main()
     static const char *str = "$GPGGA,081828.00,1257.20740,N,07738.93172,E,1,07,6.39,866.5,M,-86.4,M,,*73";
 
     conf_led();
-    conf_clk();
-    conf_i2c();
+
+    //conf_clk();
+    //conf_i2c();
+
+    i2c_init();
     uart_init();
 
-    delay_ms(1);
     
     LCD_Init();
+    delay_ms(10);
+
     LCD_On();
     LCD_Clear();
 
