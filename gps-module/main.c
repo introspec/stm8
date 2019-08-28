@@ -203,8 +203,8 @@ main()
     LCD_On();
     LCD_Clear();
 
-    LCD_FStr("Waiting for GPS lock ...");
-    LCD_Update();
+//    LCD_FStr("Waiting for GPS lock ...");
+//    LCD_Update();
 
 #if 0
     for (i = 0; i < 80; ++i) {
@@ -213,7 +213,7 @@ main()
     };
 #endif
 
-    LCD_Clear();
+//    LCD_Clear();
     display_nema_gga(str);
     LCD_Update();
 
