@@ -186,11 +186,42 @@ fmt_err:
     return;
 }
 
+#define BUFSZ           128
+#define BUF_MAX_IDX     126
+
+static uint8_t buf[BUFSZ];
+
+void
+read_nema_line()
+{
+    static uint8_t pos = 0;
+
+    while (1) {
+        buf[pos] = uart_read();
+        if (buf[pos] == '\n') {
+            buf[pos + 1] = '0';
+            pos = 0;
+            break;
+        }
+        if (pos < BUF_MAX_IDX)
+            ++pos;
+    }
+}
+
+void
+delay_sec(uint8_t s)
+{
+    while (s-- > 0) {
+        delay_ms(1000);
+    }
+}
+
 
 void
 main() 
 {
-    static const char *str = "$GPGGA,081828.00,1257.20740,N,07738.93172,E,1,07,6.39,866.5,M,-86.4,M,,*73";
+    uint8_t fmt;
+    //static const char *str = "$GPGGA,081828.00,1257.20740,N,07738.93172,E,1,07,6.39,866.5,M,-86.4,M,,*73";
 
     conf_led();
 
@@ -205,22 +236,30 @@ main()
     delay_ms(10);
 
     LCD_On();
-    LCD_Clear();
+    delay_ms(10);
 
-//    LCD_FStr("Waiting for GPS lock ...");
-//    LCD_Update();
+    fmt = 0;
+    while (1) {
+        read_nema_line();
+        if (buf[0] == '$' &&
+            buf[1] == 'G' &&
+            buf[2] == 'P' &&
+            buf[3] == 'G' &&
+            buf[4] == 'G' &&
+            buf[5] == 'A')
+        {
+            LCD_Clear();
+            if (fmt == 0)
+                display_nema_gga(buf);
+            else
+                LCD_FStr(buf);
 
-#if 0
-    for (i = 0; i < 80; ++i) {
-        ch = uart_read();
-        LCD_Chr(ch);
-    };
-#endif
+            LCD_Update();
+            delay_sec(20);
+            fmt ^= 1;
+        }
+    }
 
-//    LCD_Clear();
-    display_nema_gga(str);
-    LCD_Update();
-
-    I2C_CR1 &= (uint8_t)~1;
-    blink();
+    //I2C_CR1 &= (uint8_t)~1;
+    //blink();
 }
