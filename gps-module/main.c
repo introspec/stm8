@@ -129,8 +129,8 @@ display_latlng(const char *str, int ll)
     LCD_FStr(ll == 0 ? "Latitude: " : "Longitude: ");
     str = display_chars(str, (ll == 0 ? 2 : 3));
     LCD_Chr('\'');
-    str = display_chars(str, 2);
-    str = skip_chars(str, 7);
+    str = display_chars(str, 5);
+    str = skip_chars(str, 4);
     str = display_chars(str, 1);
     return str;
 }
@@ -169,7 +169,7 @@ display_nema_gga(const char *str)
     ++str;
 
     str = display_latlng(str, 1);
-    LCD_Newline();
+    //LCD_Newline();
 
     if (!(*str) || *str != ',')
         goto fmt_err;
