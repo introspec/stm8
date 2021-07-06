@@ -171,9 +171,9 @@ display_latlng(const char *str, int ll)
 	} else
 	    str = display_chars(str, 3);
     }
-    LCD_Chr('~');
+    LCD_Chr(' ');
     str = display_chars(str, 2);
-    LCD_Chr('\'');
+    LCD_Chr(' ');
     str = skip_chars(str, 1);
 
     num = str_to_num(str, 5);	
