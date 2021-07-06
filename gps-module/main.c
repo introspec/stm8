@@ -161,8 +161,16 @@ display_latlng(const char *str, int ll)
 {
     uint32_t num;
 
-    LCD_FStr(ll == 0 ? "Latitude: " : "Longitude: ");
-    str = display_chars(str, (ll == 0 ? 2 : 3));
+    LCD_FStr(ll == 0 ? "Lat:  " : "Lon: ");
+    if (ll == 0)
+	str = display_chars(str, 2);
+    else {
+	if (str[0] == '0') {
+	    LCD_Chr(' ');
+	    str = display_chars(str+1, 2);
+	} else
+	    str = display_chars(str, 3);
+    }
     LCD_Chr('~');
     str = display_chars(str, 2);
     LCD_Chr('\'');
@@ -174,6 +182,7 @@ display_latlng(const char *str, int ll)
     str += 5;
     display_num(num, 2);
     str = skip_chars(str, 1);		/* skip of comma */
+    LCD_Chr(' ');
     str = display_chars(str, 1);	/* N/S/E/W */
     return str;
 }
@@ -182,9 +191,10 @@ display_latlng(const char *str, int ll)
 const char*
 display_altitude(const char *str)
 {
-    LCD_FStr("Altitude: ");
+    LCD_FStr("Alt:  ");
     str = skip_to_next_comma(str, 1, 1);
     str = skip_chars(str, 1);
+    LCD_Chr(' ');
     str = display_chars(str, 1);
     return str;
 }
@@ -212,7 +222,7 @@ display_nema_gga(const char *str)
     ++str;
 
     str = display_latlng(str, 1);
-    //LCD_Newline();
+    LCD_Newline();
 
     if (!(*str) || *str != ',')
         goto fmt_err;
@@ -264,7 +274,7 @@ void
 main() 
 {
     uint8_t fmt;
-    //static const char *str = "$GPGGA,081828.00,1257.20740,N,07738.93172,E,1,07,6.39,866.5,M,-86.4,M,,*73";
+    // static const char *str = "$GPGGA,081828.00,1257.20740,N,07738.93172,E,1,07,6.39,866.5,M,-86.4,M,,*73";
 
     conf_led();
 
@@ -284,7 +294,7 @@ main()
     fmt = 0;
     while (1) {
         read_nema_line();
-	/*strcpy(buf, str);*/
+	//strcpy(buf, str);
 
         if (buf[0] == '$' &&
             buf[1] == 'G' &&
