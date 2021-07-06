@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <string.h>
 #include <stm8s.h>
 #include <delay.h>
 #include <i2c.h>
@@ -123,15 +124,57 @@ skip_chars(const char *str, int count)
     return str;
 }
 
+uint32_t
+str_to_num(const char *str, int len)
+{
+    uint32_t num = 0;
+
+    while (*str && len) {
+	num *= 10;
+        num +=	*str - '0';
+	++str;
+	--len;
+    }
+    return num;
+}
+
+
+void
+display_num(uint32_t num,uint8_t len)
+{
+    char str[16];
+    uint8_t i;
+
+    i = 0;
+    do {
+	str[i] = (num % 10) + '0';
+	num /= 10;
+    } while (++i < 16 && num > 0);
+
+    while ((i-- != 0) && (len-- != 0)) {
+	LCD_Chr(str[i]);
+    }
+}
+
 const char*
 display_latlng(const char *str, int ll)
 {
+    uint32_t num;
+
     LCD_FStr(ll == 0 ? "Latitude: " : "Longitude: ");
     str = display_chars(str, (ll == 0 ? 2 : 3));
+    LCD_Chr('~');
+    str = display_chars(str, 2);
     LCD_Chr('\'');
-    str = display_chars(str, 5);
-    str = skip_chars(str, 4);
-    str = display_chars(str, 1);
+    str = skip_chars(str, 1);
+
+    num = str_to_num(str, 5);	
+    num *= 60;
+    num /= 100000;
+    str += 5;
+    display_num(num, 2);
+    str = skip_chars(str, 1);		/* skip of comma */
+    str = display_chars(str, 1);	/* N/S/E/W */
     return str;
 }
 
@@ -241,6 +284,8 @@ main()
     fmt = 0;
     while (1) {
         read_nema_line();
+	/*strcpy(buf, str);*/
+
         if (buf[0] == '$' &&
             buf[1] == 'G' &&
             buf[2] == 'P' &&
@@ -256,7 +301,7 @@ main()
 
             LCD_Update();
             delay_sec(20);
-            fmt ^= 1;
+            //fmt ^= 1;
         }
     }
 
